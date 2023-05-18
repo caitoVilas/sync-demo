@@ -9,16 +9,15 @@
         <outputRelativeToContentRoot value="true" />
         <module name="pedidos-service" />
         <module name="appSync" />
+        <module name="config-server" />
         <module name="work-order" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="config-server" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="appSync" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="pedidos-service" options="-parameters" />
       <module name="work-order" options="-parameters" />
     </option>

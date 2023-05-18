@@ -18,6 +18,11 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <spring-cloud.version>2021.0.7</spring-cloud.version>
     </properties>
+
+    <modules>
+        <module>config-server</module>
+    </modules>
 
 </project>
