@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -21,5 +22,16 @@ public class SyncHandlerException {
                 .timestemp(LocalDateTime.now())
                 .build();
         return new ResponseEntity(response, HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(ServiceNoResponseException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorDTO> serviceNoResponseException(Exception e, HttpServletRequest request){
+        ErrorDTO response = ErrorDTO.builder()
+                .code(503)
+                .message(e.getMessage())
+                .timestemp(LocalDateTime.now())
+                .build();
+        return new  ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

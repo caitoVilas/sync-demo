@@ -2,6 +2,7 @@ package com.pedidos.appsync.service;
 
 import com.pedidos.appsync.enums.OrderStatus;
 import com.pedidos.appsync.exception.OrdersEmptyException;
+import com.pedidos.appsync.exception.ServiceNoResponseException;
 import com.pedidos.appsync.feignclients.OrderFeingClient;
 import com.pedidos.appsync.feignclients.WorkOrderFeing;
 import com.pedidos.appsync.model.Order;
@@ -51,6 +52,16 @@ public class SyncServiceImpl implements SyncService {
             OrderList orderList = OrderList.builder()
                     .orders(updatedOrders)
                     .build();
+
+            try {
+                workOrderFeing.prueba();
+            }catch (ResourceAccessException e){
+                log.info("**** el servicio de ordenes de trabajo no responde *****");
+                throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
+            }catch (Exception e){
+                log.info("**** el servicio de ordenes de trabajo no responde *****");
+                throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
+            }
             List<Order> savedOrders = this.updateOrders(orderList);
             log.info("se actualizo el estado de ordenes procesadas");
             log.info("guardando ordenes de trabajo...");
@@ -58,8 +69,12 @@ public class SyncServiceImpl implements SyncService {
             log.info("ordenes de trabajo guardadas");
             log.info("*** finalizado proceso de sincronizacion ****");
             return savedOrders;
+
         }catch (ResourceAccessException e){
             log.error("el servicio de pedidos no responde");
+        }catch (Exception e){
+            log.error("**** el servicio de pedidos no responde ****");
+            throw new ServiceNoResponseException("el servicio de pedidos no responde");
         }
 
         return null;
@@ -98,16 +113,22 @@ public class SyncServiceImpl implements SyncService {
             return orderList.getOrders();
         }catch (ResourceAccessException e){
             log.error("el servicio de pedidos no responde");
-        }
+        }catch (Exception e){
+        log.error("**** el servicio de pedidos no responde ****");
+        throw new ServiceNoResponseException("el servicio de pedidos no responde");
+    }
         return orderList.getOrders();
     }
 
     private List<WorkOrder> createWorkOrders(List<WorkOrder> workOrders){
         try {
             log.info("llamar servicio externo guardar ordenes de trabajo {}", urlOrdenesTrabajo);
-             workOrderFeing.saveWorkOrder(workOrders);
+            workOrderFeing.saveWorkOrder(workOrders);
         }catch (ResourceAccessException e){
             log.error("el servicio de ordenes de trabajo no responde");
+        }catch (Exception e){
+            log.error("**** el servicio de ordenes de trabajo no responde ****");
+            throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
         }
         return workOrders;
     }
