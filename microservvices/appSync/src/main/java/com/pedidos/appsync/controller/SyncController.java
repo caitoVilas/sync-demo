@@ -26,7 +26,8 @@ public class SyncController {
     @GetMapping
     @Operation(description = "sincronizacion de pedidos", summary = "sincronizacion de pedidos")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "ok")
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "503", description = "servicio no disponible")
     })
     public ResponseEntity<List<Order>> getOrders(){
         log.info("--- endpoint sync obtener pedidos ---");

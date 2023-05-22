@@ -25,13 +25,13 @@ public class SyncHandlerException {
     }
 
     @ExceptionHandler(ServiceNoResponseException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<ErrorDTO> serviceNoResponseException(Exception e, HttpServletRequest request){
         ErrorDTO response = ErrorDTO.builder()
                 .code(503)
                 .message(e.getMessage())
                 .timestemp(LocalDateTime.now())
                 .build();
-        return new  ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new  ResponseEntity(response, HttpStatus.SERVICE_UNAVAILABLE);
     }
 }
