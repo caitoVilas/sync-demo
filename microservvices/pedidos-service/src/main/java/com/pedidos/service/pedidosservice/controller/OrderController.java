@@ -1,6 +1,7 @@
 package com.pedidos.service.pedidosservice.controller;
 
 import com.pedidos.service.pedidosservice.entity.Order;
+import com.pedidos.service.pedidosservice.model.OrderList;
 import com.pedidos.service.pedidosservice.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,10 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +42,12 @@ public class OrderController {
     public List<Order> getOrders(){
         log.info("--- endpoint pedidos obtener pedidos ---");
         return orderService.getOrders();
+    }
+
+    @PostMapping("/update")
+    public List<Order> updateStatus(@RequestBody OrderList orderList){
+        log.info("--- endpoint actualizacion de estado de pedidos procesados ---");
+        orderService.updateOrders(orderList.getOrders());
+        return null;
     }
 }

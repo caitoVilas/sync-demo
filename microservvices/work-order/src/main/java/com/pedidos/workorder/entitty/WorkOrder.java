@@ -20,6 +20,6 @@ public class WorkOrder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
-    private Long orderId;
+    private Long order_id;
     private LocalDateTime date;
 }

@@ -14,7 +14,7 @@ public class DatabaseConfig {
     public DataSource dataSource(){
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/batchdb");
+        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/pedidos_sync");
         driverManagerDataSource.setUsername("root");
         driverManagerDataSource.setPassword("");
         log.info("---conectado a: " + driverManagerDataSource.getUrl());

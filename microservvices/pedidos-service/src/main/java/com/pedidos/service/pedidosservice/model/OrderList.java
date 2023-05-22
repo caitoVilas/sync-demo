@@ -1,5 +1,6 @@
-package com.pedidos.appsync.model;
+package com.pedidos.service.pedidosservice.model;
 
+import com.pedidos.service.pedidosservice.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

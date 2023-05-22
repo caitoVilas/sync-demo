@@ -39,4 +39,10 @@ public class OrderServiceImpl implements OrderService{
         orderRepository.saveAll(orders);
 
     }
+
+    @Override
+    public List<Order> updateOrders(List<Order> orders) {
+        log.info("inicio servicio actualizacion estado pedidos");
+        return orderRepository.saveAll(orders);
+    }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/works-orders")
+@RequestMapping("/api/works-orders")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "servicio - ordenes de trabajo")

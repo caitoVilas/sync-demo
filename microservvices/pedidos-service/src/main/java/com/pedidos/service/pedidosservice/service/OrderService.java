@@ -7,4 +7,5 @@ import java.util.List;
 public interface OrderService {
     List<Order> getOrders();
     void saveOrders();
+    List<Order> updateOrders(List<Order> orders);
 }
