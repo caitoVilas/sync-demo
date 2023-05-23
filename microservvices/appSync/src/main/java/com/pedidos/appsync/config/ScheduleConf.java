@@ -20,7 +20,7 @@ public class ScheduleConf {
         try {
             syncService.getOrders();
         }catch (Exception e){
-                log.error("**** fallo el servicio syncro porque un servicio no responde ****");
+                log.error("**** fallo la syncro porque un servicio no responde ****");
         }
 
     }
