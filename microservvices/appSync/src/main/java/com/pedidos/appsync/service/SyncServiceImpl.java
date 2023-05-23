@@ -38,43 +38,36 @@ public class SyncServiceImpl implements SyncService {
     public List<Order> getOrders() {
         log.info("incio servicio obtener pedidos");
         try {
-            log.info("llamando servicio externo obtener pedidos: {}", urlPedidos);
-            List<Order> orders = feingClient.getOrders();
+            List<Order> orders;
+            List<WorkOrder> workOrders;
+            List<Order> updatedOrders;
 
+            orders = this.getOrdersFromDB();
             if (orders.isEmpty()){
                 log.error("no se encontraron ordenes para proceasr");
                 throw new OrdersEmptyException("no se encontraron ordenes para proceasr");
             }
-            List<WorkOrder> workOrders = this.procesWorkOrders(orders);
+            workOrders = this.procesWorkOrders(orders);
             log.info("construida lista de ordenes de trabajo");
-            List<Order> updatedOrders  = this.updateStatus(orders);
+            updatedOrders  = this.updateStatus(orders);
             log.info("pedidos actualizados");
             OrderList orderList = OrderList.builder()
                     .orders(updatedOrders)
                     .build();
 
-            try {
-                workOrderFeing.prueba();
-            }catch (ResourceAccessException e){
-                log.info("**** el servicio de ordenes de trabajo no responde *****");
-                throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
-            }catch (Exception e){
-                log.info("**** el servicio de ordenes de trabajo no responde *****");
-                throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
+            if (this.pruebaServicioWorkOrder()) {
+                List<Order> savedOrders = this.updateOrders(orderList);
+                log.info("se actualizo el estado de ordenes procesadas");
+                log.info("guardando ordenes de trabajo...");
+                List<WorkOrder> savedWorkOrders = this.createWorkOrders(workOrders);
+                log.info("ordenes de trabajo guardadas");
+                log.info("*** finalizado proceso de sincronizacion ****");
+                return savedOrders;
             }
-            List<Order> savedOrders = this.updateOrders(orderList);
-            log.info("se actualizo el estado de ordenes procesadas");
-            log.info("guardando ordenes de trabajo...");
-            List<WorkOrder> savedWorkOrders = this.createWorkOrders(workOrders);
-            log.info("ordenes de trabajo guardadas");
-            log.info("*** finalizado proceso de sincronizacion ****");
-            return savedOrders;
-
-        }catch (ResourceAccessException e){
-            log.error("el servicio de pedidos no responde");
         }catch (Exception e){
-            log.error("**** el servicio de pedidos no responde ****");
-            throw new ServiceNoResponseException("el servicio de pedidos no responde");
+            log.error("**** interrupcion del servicio de syncro porque un servicio no responde ****");
+            throw new ServiceNoResponseException(
+                    "interrupcion del servicio de syncro porque un servicio no responde");
         }
 
         return null;
@@ -131,5 +124,33 @@ public class SyncServiceImpl implements SyncService {
             throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
         }
         return workOrders;
+    }
+
+    private List<Order> getOrdersFromDB(){
+        try {
+            log.info("llamando servicio externo obtener pedidos: {}", urlPedidos);
+            List<Order> orders = feingClient.getOrders();
+            return orders;
+        }catch (ResourceAccessException e){
+            log.error("el servicio de pedidos no responde");
+        }catch (Exception e){
+            log.error("**** el servicio de pedidos no responde ****");
+            throw new ServiceNoResponseException("el servicio de pedidos no responde");
+        }
+        return null;
+    }
+
+    private boolean pruebaServicioWorkOrder(){
+        try {
+            log.info("preba servico ordenes de trabajo");
+            workOrderFeing.prueba();
+            return true;
+        }catch (ResourceAccessException e){
+            log.error("el servicio de ordenes de trabajo no responde");
+        }catch (Exception e){
+            log.error("**** el servicio de ordenes de trabajo no responde ****");
+            throw new ServiceNoResponseException("el servicio de ordenes de trabajo no responde");
+        }
+        return false;
     }
 }
